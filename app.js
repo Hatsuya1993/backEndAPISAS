@@ -2,11 +2,16 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 app.use(bodyParser.json())
-const adminRoutes = require('./routes/admin')
+const getAdmin = require('./routes/getAdmin')
+const postAdmin = require('./routes/postAdmin')
+const putAdmin = require('./routes/putAdmin')
+
 const db = require('./connection')
 
+app.use('/', getAdmin)
+app.use('/', postAdmin)
+app.use('/', putAdmin)
 
-app.use('/', adminRoutes)
 
 // Create DB
 app.get("/createdb", (req, res) => {
