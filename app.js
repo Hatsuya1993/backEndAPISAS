@@ -3,8 +3,8 @@ const bodyParser = require('body-parser')
 const app = express()
 app.use(bodyParser.json())
 const getAdmin = require('./routes/getAdmin')
-const postAdmin = require('./routes/postAdmin')
-const putAdmin = require('./routes/putAdmin')
+const postAdmin = require('./routes/newPostAdmin')
+const putAdmin = require('./routes/newPutAdmin')
 
 const db = require('./connection')
 
