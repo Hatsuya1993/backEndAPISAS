@@ -1,2 +1,4 @@
+# Ignore unnecessary files like node_modules
+# Sensitive data in config.env to be ignored to the public
 config.env
 node_modules

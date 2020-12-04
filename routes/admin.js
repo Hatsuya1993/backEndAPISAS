@@ -2,85 +2,217 @@ const express = require('express')
 const router = express.Router()
 const db = require('../connection')
 
-let numberOfClass = 0
+// GET the report 
 
 router.get('/api/reports/workload', (req, res) => {
+
     try {
         let sqlReport = 'SELECT teacher.idTeacher, teacher.teacherName, subject.subjectCode, subject.subjectName, class.idClassTeacher, teacher.idTeacher FROM teacher JOIN subject ON teacher.idTeacher = subject.idSubjectTeacher JOIN class ON teacher.idTeacher = class.idClassTeacher;'
+
         db.query(sqlReport, (err, results) => {
+            // Check syntax for MySql (sqlReport)
             if (err) {
-                throw err
+                return res.send({
+                    status: 400,
+                    message: "Invalid syntax (sqlReport)"
+                })
+
             } else {
                 let countClass = "SELECT idClassTeacher, COUNT(*) AS 'Number of class' FROM class GROUP BY idClassTeacher;"
-                db.query(countClass, (err, classResults) =>{
-                if (err){
-                    throw err
-                }
-                {
-                    res.send({results,classResults}).status(204)
-                }})
+                db.query(countClass, (err, classResults) => {
+                    // Check syntax for MySql (countClass)
+                    if (err) {
+                        return res.send({
+                            status: 400,
+                            message: "Invalid syntax (countClass)"
+                        })
+                    } {
+                        res.send({
+                            status: 204,
+                            message: {
+                                results,
+                                classResults
+                            }
+                        })
+                    }
+                })
             }
         })
+        // Catch for any syntax error under the try block
     } catch (err) {
-        res.send(err).status(500)
+        res.send({
+            status: 400,
+            message: "Check syntax under the try block (line 9)"
+        })
     }
+
 })
 
+// POST data into the required fields
+
 router.post('/api/register', (req, res) => {
+
+    // Check for teacher
+
     if (req.body.teacher) {
-        let teacherID = req.body.teacher.idTeacher
-        let teacherName = req.body.teacher.name
-        let teacherEmail = req.body.teacher.email
-        let sql = "INSERT INTO teacher (idTeacher, teacherName, teacherEmail) VALUES (?, ?, ?)";
         try {
-            db.query(sql, [teacherID, teacherName, teacherEmail], (err, result) => {
-                console.log("Added teacher data")
-                res.send(result).status(204)
+            let {
+                idTeacher,
+                name,
+                email
+            } = req.body.teacher
+            let sql = "INSERT INTO teacher (idTeacher, teacherName, teacherEmai) VALUES (?, ?, ?)";
+            // Check if all values are passed to the input 
+            if (!idTeacher || !name || !email) {
+                return res.send({
+                    status: 400,
+                    message: "Missing variable (check idTeacher, name, email)"
+                })
+            }
+
+            db.query(sql, [idTeacher, name, email], (err, result) => {
+                if (err) {
+                    return res.send({
+                        status: 400,
+                        message: "Invalid syntax (sql) / Multiple data"
+                    })
+                }
+                res.send({
+                    status: 204,
+                    message: {
+                        result,
+                        update: "Added teacher data"
+                    }
+                })
             })
+            // Catch for any syntax error under the try block
         } catch (err) {
-            res.send(err).status(400)
+            res.send({
+                status: 400,
+                message: "Check syntax under the try block (line 58)"
+            })
         }
+
+        // Check for students
+
     } else if (req.body.students) {
-        let teacherToStudentID = req.body.students.idTeacher
-        let studentsName = req.body.students.name
-        let studentsEmail = req.body.students.email
-        let sql = "INSERT INTO students (idStudentTeacher, studentName, studentEmail) VALUES (?, ?, ?)";
         try {
-            db.query(sql, [teacherToStudentID, studentsName, studentsEmail], (err, result) => {
-                console.log("Added student data")
-                res.send(result).status(204)
+            let {
+                idTeacher,
+                name,
+                email
+            } = req.body.students
+            let sql = "INSERT INTO students (idStudentTeacher, studentName, studentEmail) VALUES (?, ?, ?)";
+            if (!idTeacher || !name || !email) {
+                return res.send({
+                    status: 400,
+                    message: "Missing variable (check idTeacher, name, email)"
+                })
+            }
+
+            db.query(sql, [idTeacher, name, email], (err, result) => {
+                if (err) {
+                    return res.send({
+                        status: 400,
+                        message: "Invalid syntax (sql) / Multiple data"
+                    })
+                }
+                res.send({
+                    status: 204,
+                    message: {
+                        result,
+                        update: "Added student data"
+                    }
+                })
             })
         } catch (err) {
-            res.send(err).status(400)
+            res.send({
+                status: 400,
+                message: "Check syntax under the try block (line 99)"
+            })
         }
+
+        // Check for subject
+
     } else if (req.body.subject) {
-        let teacherToSubjectID = req.body.subject.idTeacher
-        let subjectCode = req.body.subject.subjectCode
-        let subjectName = req.body.subject.name
-        let sql = "INSERT INTO subject (idSubjectTeacher, subjectCode, subjectName) VALUES (?, ?, ?)";
         try {
-            db.query(sql, [teacherToSubjectID, subjectCode, subjectName], (err, result) => {
-                console.log("Added subject data")
-                res.send(result).status(204)
+            let {
+                idTeacher,
+                subjectCode,
+                name
+            } = req.body.subject
+            let sql = "INSERT INTO subject (idSubjectTeacher, subjectCode, subjectName) VALUES (?, ?, ?)";
+            if (!idTeacher || !name || !subjectCode) {
+                return res.send({
+                    status: 400,
+                    message: "Missing variable (check idTeacher, name, subjectCode)"
+                })
+            }
+            db.query(sql, [idTeacher, subjectCode, name], (err, result) => {
+                if (err) {
+                    return res.send({
+                        status: 400,
+                        message: "Invalid syntax (sql) / Multiple data"
+                    })
+                }
+                res.send({
+                    status: 204,
+                    message: {
+                        result,
+                        update: "Added subject data"
+                    }
+                })
             })
         } catch (err) {
-            res.send(err).status(400)
+            res.send({
+                status: 400,
+                message: "Check syntax under the try block (line 138)"
+            })
         }
+
+        // Check for class
+
     } else if (req.body.class) {
-        let teacherToSubjectID = req.body.class.idTeacher
-        let classCode = req.body.class.classCode
-        let className = req.body.class.name
-        let sql = "INSERT INTO class (idClassTeacher, classCode, name) VALUES (?, ?, ?, ?)";
         try {
-            db.query(sql, [teacherToSubjectID, classCode, className, ], (err, result) => {
-                console.log("Added class data")
-                res.send(result).status(204)
+            let {
+                idTeacher,
+                classCode,
+                name
+            } = req.body.class
+            let sql = "INSERT INTO class (idClassTeacher, classCode, name) VALUES (?, ?, ?)";
+            if (!idTeacher || !classCode || !name) {
+                return res.send({
+                    status: 400,
+                    message: "Missing variable (check idTeacher, classCode, name)"
+                })
+            }
+            db.query(sql, [idTeacher, classCode, name], (err, result) => {
+                if (err) {
+                    return res.send({
+                        status: 400,
+                        message: "Invalid syntax (sql) / Multiple data"
+                    })
+                }
+                res.send({
+                    status: 204,
+                    message: {
+                        result,
+                        update: "Added class data"
+                    }
+                })
             })
         } catch (err) {
-            res.send(err).status(400)
+            res.send({
+                status: 400,
+                message: "Check syntax under the try block (line 176)"
+            })
         }
     } else {
-        res.send("Invalid data").status(500)
+        // Input data is not related to (teacher, students, subject or class)
+        res.send({
+            status: 400,
+            message: "Invalid data (Neither teacher, students, subject or class)"
+        })
     }
 })
 
