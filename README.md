@@ -43,5 +43,6 @@ Instructions :
     }
     8) From postman under GET request (link : http://localhost:3000/api/reports/workload)
     9) Report received 
-    10) END
+    10) Take note every teacher must have a subject and class
+    11) END
     
