@@ -8,7 +8,7 @@ Instructions :
     4) From postman under POST request (link : http://localhost:3000/api/register), under Body
     select raw from drop down menu below Body and select JSON beside it.
     5) Next input the required JSON data for teacher, students, subject, class (format shown below)
-    6) TAKE NOTE DATA CAN ONLY BE POSTED ONE AT A TIME
+    6) TAKE NOTE DATA CAN ONLY BE POSTED ONE AT A TIME (Either teacher, students, class, subject at a        time)
     7) For teacher = ( <= NOT INCLUDED) 
     {
     "teacher" {
