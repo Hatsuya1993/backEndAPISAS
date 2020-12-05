@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const db = require('../connection')
+const teacher = require('./teacher/teacherPost')
+const students = require('./students/studentsPost')
+const subject = require('./subject/subjectPost')
+const classs = require('./class/classPost')
 const errorCheck = require('./errorCheck')
 
 // POST data into the required fields
@@ -11,6 +14,7 @@ router.post('/api/register', (req, res) => {
         // Post teacher data 
         case "teacher":
             try {
+
                 let {
                     idTeacher,
                     name,
@@ -22,28 +26,17 @@ router.post('/api/register', (req, res) => {
                     return res.send(errorCheck(idTeacher, name, email, 'idTeacher', 'name', 'email'))
                 }
 
-                let sql = "INSERT INTO teacher (idTeacher, teacherName, teacherEmail) VALUES (?, ?, ?)";
-
-                db.query(sql, [idTeacher, name, email], (err, result) => {
-                    if (err) {
-                        return res.send({
-                            status: 400,
-                            message: "Invalid syntax (sql) / Multiple data"
-                        })
-                    }
-                    res.send({
-                        status: 204,
-                        message: {
-                            result,
-                            update: "Added teacher data"
-                        }
-                    })
+                teacher(idTeacher, name, email, function (returnValue) {
+                    res.send(returnValue)
                 })
+
+
                 // Catch for any syntax error under the try block
             } catch (err) {
                 res.send({
                     status: 400,
-                    message: "Check syntax under the try block (line 14)"
+                    message: "Check syntax under the try block (line 16)",
+                    info: err
                 })
             }
             break
@@ -61,28 +54,16 @@ router.post('/api/register', (req, res) => {
                     return res.send(errorCheck(idTeacher, name, email, 'idTeacher', 'name', 'email'))
                 }
 
-                let sql = "INSERT INTO students (idStudentTeacher, studentName, studentEmail) VALUES (?, ?, ?)";
-
-                db.query(sql, [idTeacher, name, email], (err, result) => {
-                    if (err) {
-                        return res.send({
-                            status: 400,
-                            message: "Invalid syntax (sql) / Multiple data"
-                        })
-                    }
-                    res.send({
-                        status: 204,
-                        message: {
-                            result,
-                            update: "Added student data"
-                        }
-                    })
+                students(idTeacher, name, email, function (returnValue) {
+                    res.send(returnValue)
                 })
+
                 // Catch for any syntax error under the try block
             } catch (err) {
                 res.send({
                     status: 400,
-                    message: "Check syntax under the try block (line 54)"
+                    message: "Check syntax under the try block (line 45)",
+                    info: err
                 })
             }
             break
@@ -100,28 +81,15 @@ router.post('/api/register', (req, res) => {
                     return res.send(errorCheck(idTeacher, name, subjectCode, 'idTeacher', 'name', 'subjectCode'))
                 }
 
-                let sql = "INSERT INTO subject (idSubjectTeacher, subjectCode, subjectName) VALUES (?, ?, ?)";
-
-                db.query(sql, [idTeacher, subjectCode, name], (err, result) => {
-                    if (err) {
-                        return res.send({
-                            status: 400,
-                            message: "Invalid syntax (sql) / Multiple data"
-                        })
-                    }
-                    res.send({
-                        status: 204,
-                        message: {
-                            result,
-                            update: "Added subject data"
-                        }
-                    })
+                subject(idTeacher, name, subjectCode, function (returnValue) {
+                    res.send(returnValue)
                 })
+
                 // Catch for any syntax error under the try block
             } catch (err) {
                 res.send({
                     status: 400,
-                    message: "Check syntax under the try block (line 94)"
+                    message: "Check syntax under the try block (line 72)"
                 })
             }
             break
@@ -139,28 +107,15 @@ router.post('/api/register', (req, res) => {
                     return res.send(errorCheck(idTeacher, name, classCode, 'idTeacher', 'name', 'classCode'))
                 }
 
-                let sql = "INSERT INTO class (idClassTeacher, classCode, name) VALUES (?, ?, ?)";
-
-                db.query(sql, [idTeacher, classCode, name], (err, result) => {
-                    if (err) {
-                        return res.send({
-                            status: 400,
-                            message: "Invalid syntax (sql) / Multiple data"
-                        })
-                    }
-                    res.send({
-                        status: 204,
-                        message: {
-                            result,
-                            update: "Added class data"
-                        }
-                    })
+                classs(idTeacher, name, classCode, function (returnValue) {
+                    res.send(returnValue)
                 })
+
                 // Catch for any syntax error under the try block
             } catch (err) {
                 res.send({
                     status: 400,
-                    message: "Check syntax under the try block (line 134)"
+                    message: "Check syntax under the try block (line 98)"
                 })
             }
             break

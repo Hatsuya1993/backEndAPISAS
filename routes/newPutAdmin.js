@@ -1,7 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const db = require('../connection')
 const errorCheck = require('./errorCheck')
+const teacherPut = require('./teacher/teacherPut')
+const studentsPut = require('./students/studentsPut')
+const classPut = require('./class/classPut')
+const subjectPut = require('./subject/subjectPut')
+
 
 router.put('/api/register', (req, res) => {
     switch ((Object.keys(req.body))[0]) {
@@ -19,25 +23,15 @@ router.put('/api/register', (req, res) => {
                     return res.send(errorCheck(idTeacher, name, email, 'idTeacher', 'name', 'email'))
                 }
 
-                let sql = `UPDATE teacher SET idTeacher = ?,teacherName = ?, teacherEmail = ? WHERE idTeacher = ${idTeacher};`
-
-                db.query(sql, [idTeacher, name, email], (err, results) => {
-                    if (err) {
-                        return res.send({
-                            status: 400,
-                            message: "Invalid syntax (line 24)"
-                        })
-                    }
-                    return res.send({
-                        status: 204,
-                        message: "Updated teacher"
-                    })
+                teacherPut(idTeacher, name, email, function (returnValue) {
+                    res.send(returnValue)
                 })
+
                 // Catch for any syntax error under the try block
             } catch (err) {
                 res.send({
                     status: 400,
-                    message: "Check syntax under the try block (line 10)"
+                    message: "Check syntax under the try block (line 14)"
                 })
             }
             break
@@ -55,25 +49,15 @@ router.put('/api/register', (req, res) => {
                     return res.send(errorCheck(idTeacher, name, email, 'idTeacher', 'name', 'email'))
                 }
 
-                let sql = `UPDATE students SET idStudentTeacher = ?,studentName = ?, studentEmail = ? WHERE idStudentTeacher = ${idTeacher};`
-
-                db.query(sql, [idTeacher, name, email], (err, results) => {
-                    if (err) {
-                        return res.send({
-                            status: 400,
-                            message: "Invalid syntax (line 60)"
-                        })
-                    }
-                    return res.send({
-                        status: 204,
-                        message: "Updated students"
-                    })
+                studentsPut(idTeacher, name, email, function (returnValue) {
+                    res.send(returnValue)
                 })
+
                 // Catch for any syntax error under the try block
             } catch (err) {
                 res.send({
                     status: 400,
-                    message: "Check syntax under the try block (line 46)"
+                    message: "Check syntax under the try block (line 40)"
                 })
             }
             break
@@ -91,25 +75,15 @@ router.put('/api/register', (req, res) => {
                     return res.send(errorCheck(idTeacher, name, subjectCode, 'idTeacher', 'name', 'subjectCode'))
                 }
 
-                let sql = `UPDATE subject SET idSubjectTeacher = ?,subjectCode = ?, subjectName = ? WHERE idSubjectTeacher = ${idTeacher};`
-
-                db.query(sql, [idTeacher, name, subjectCode], (err, results) => {
-                    if (err) {
-                        return res.send({
-                            status: 400,
-                            message: "Invalid syntax (line 97)"
-                        })
-                    }
-                    return res.send({
-                        status: 204,
-                        message: "Updated subject"
-                    })
+                subjectPut(idTeacher, name, subjectCode, function (returnValue) {
+                    res.send(returnValue)
                 })
+
                 // Catch for any syntax error under the try block
             } catch (err) {
                 res.send({
                     status: 400,
-                    message: "Check syntax under the try block (line 83)"
+                    message: "Check syntax under the try block (line 66)"
                 })
             }
             break
@@ -127,25 +101,15 @@ router.put('/api/register', (req, res) => {
                     return res.send(errorCheck(idTeacher, name, classCode, 'idTeacher', 'name', 'classCode'))
                 }
 
-                let sql = `UPDATE class SET idClassTeacher = ?, classCode = ?,  name = ? WHERE idClassTeacher = ${idTeacher};`
-
-                db.query(sql, [idTeacher, name, classCode], (err, results) => {
-                    if (err) {
-                        return res.send({
-                            status: 400,
-                            message: "Invalid syntax (line 134)"
-                        })
-                    }
-                    return res.send({
-                        status: 204,
-                        message: "Updated class"
-                    })
+                classPut(idTeacher, name, classCode, function (returnValue) {
+                    res.send(returnValue)
                 })
+
                 // Catch for any syntax error under the try block
             } catch (err) {
                 res.send({
                     status: 400,
-                    message: "Check syntax under the try block (line 120)"
+                    message: "Check syntax under the try block (line 92)"
                 })
             }
             break
